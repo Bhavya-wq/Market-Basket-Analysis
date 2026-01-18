@@ -82,11 +82,19 @@ rules_df = pd.read_excel(output_path)
 
 print("Rules loaded for visualization:", rules_df.shape)
 # Select top 10 rules by lift
-top_rules = rules_df.head(10)
+# ======================
+# STEP 7: VISUALIZATION
+# ======================
+
+print("=== VISUALIZING TOP RULES ===")
+
+# Select top 10 rules by lift
+top_rules = rules.head(10)
 
 plt.figure(figsize=(10, 6))
+
 plt.barh(
-    top_rules['antecedents'].astype(str),
+    top_rules['antecedents'].apply(lambda x: ', '.join(list(x))),
     top_rules['lift']
 )
 
@@ -96,4 +104,11 @@ plt.title("Top 10 Association Rules by Lift")
 plt.gca().invert_yaxis()
 plt.tight_layout()
 
+# Save the figure FIRST
+image_path = os.path.join(BASE_DIR, "output", "top_10_rules_by_lift.png")
+plt.savefig(image_path)
+
+# Then show
 plt.show()
+
+print("Visualization saved at:", image_path)
