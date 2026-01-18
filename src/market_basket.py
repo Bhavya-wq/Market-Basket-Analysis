@@ -76,3 +76,24 @@ output_path = os.path.join(BASE_DIR, "output", "association_rules.xlsx")
 rules.to_excel(output_path, index=False)
 
 print("Association rules saved to:", output_path)
+import matplotlib.pyplot as plt
+# Load generated rules
+rules_df = pd.read_excel(output_path)
+
+print("Rules loaded for visualization:", rules_df.shape)
+# Select top 10 rules by lift
+top_rules = rules_df.head(10)
+
+plt.figure(figsize=(10, 6))
+plt.barh(
+    top_rules['antecedents'].astype(str),
+    top_rules['lift']
+)
+
+plt.xlabel("Lift")
+plt.ylabel("Itemsets (Antecedents)")
+plt.title("Top 10 Association Rules by Lift")
+plt.gca().invert_yaxis()
+plt.tight_layout()
+
+plt.show()
