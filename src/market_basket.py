@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+from mlxtend.frequent_patterns import apriori, association_rules
+
 
 print("=== STEP 5 STARTED ===")
 
@@ -46,3 +48,31 @@ basket = basket.map(lambda x: 1 if x > 0 else 0)
 
 print("Basket shape:", basket.shape)
 print(basket.head())
+print("=== APPLYING APRIORI ===")
+
+frequent_itemsets = apriori(
+    basket,
+    min_support=0.03,   # you can tune this
+    use_colnames=True
+)
+
+print("Frequent itemsets shape:", frequent_itemsets.shape)
+print(frequent_itemsets.head())
+print("=== GENERATING ASSOCIATION RULES ===")
+
+rules = association_rules(
+    frequent_itemsets,
+    metric="lift",
+    min_threshold=1
+)
+
+# Sort by strongest relationships
+rules = rules.sort_values(by="lift", ascending=False)
+
+print("Rules shape:", rules.shape)
+print(rules.head())
+# Save rules to Excel
+output_path = os.path.join(BASE_DIR, "output", "association_rules.xlsx")
+rules.to_excel(output_path, index=False)
+
+print("Association rules saved to:", output_path)
